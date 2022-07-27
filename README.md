@@ -1,5 +1,6 @@
 # README #
-This application is for Hidalgo County. 
+This application is for Hidalgo County.
+This is only a preview to showcase my work.
 My current role is Application Developer III.
 Hidalgo County needed a system to track vehicles, heavy equipment, and properties to determine if they had insurance or not. This web application will replace the existing workflow.
 
@@ -20,20 +21,16 @@ This application will mitigate and have the ability to track from beginning to f
 <img src="https://github.com/hector-light-blazor/i-Tracking/blob/master/i-App/i-App/Animations/Animation.gif" />
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+* Install Visual Studio 2022 or above
+* Install DotNet Core FrameWork 6 and above
+* Install MS SQL Server or Express version.
+* Restore the database into your SQL Server from the https://github.com/hector-light-blazor/i-Tracking/blob/master/i-App/DB_Backup/i-Tracking.bak
+* Clone or Fork the repository to your machine
+* Open the solution with your visual studio
+* Develop any features or bug fixes as needed.
+* Code some more
+* Repeat() Eat() Enjoy()
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Contact myself.
