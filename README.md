@@ -17,7 +17,7 @@ This application will mitigate and have the ability to track from beginning to f
 * Entity Framework 6.0.7
 
 ### Gif Demonstration ###
-<img src="https://bitbucket.org/hidalgocountydev/i-app/raw/ffd930dcd858a83163e1614f839cca672c6ac1b8/i-App/i-App/Animations/Animation.gif" />
+<img src="https://github.com/hector-light-blazor/i-Tracking/blob/master/i-App/i-App/Animations/Animation.gif" />
 ### How do I get set up? ###
 
 * Summary of set up
