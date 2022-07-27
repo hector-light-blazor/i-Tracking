@@ -1,13 +1,23 @@
 # README #
+This application is for Hidalgo County. 
+My current role is Application Developer III.
+Hidalgo County needed a system to track vehicles, heavy equipment, and properties to determine if they had insurance or not. This web application will replace the existing workflow.
 
-This README would normally document whatever steps are necessary to get your application up and running.
+The current workflow is to fill out some excel forms and e-mail˙them to the executive office.
 
-### What is this repository for? ###
+This has caused delays and uncertainties if vehicles, heavy equipment, and properties have the proper insurance coverage.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+This application will mitigate and have the ability to track from beginning to finish.
 
+### Technology Stack ###
+* C*
+* .NET 6.0
+* MS SQL 2012
+* Blazor Server
+* Entity Framework 6.0.7
+
+### Gif Demonstration ###
+<img src="https://bitbucket.org/hidalgocountydev/i-app/raw/ffd930dcd858a83163e1614f839cca672c6ac1b8/i-App/i-App/Animations/Animation.gif" />
 ### How do I get set up? ###
 
 * Summary of set up
