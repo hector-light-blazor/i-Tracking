@@ -1,0 +1,112 @@
+﻿@inject VehicleService VehicleService
+
+<div class="modal fade show showing" style="display: block;">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">@Title</h5>
+        <button type="button" role="button" @onclick="OnExit" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+                @if (Table.Count == 0)
+                {
+                    <SkeletonTable></SkeletonTable>
+                }
+                else{
+                     @if (DisplayInsuranceInfo)
+                        {
+                            <div  class="border-dark border">
+                                 <InsuranceTransaction Vehicle="VehicleInfo" Transaction="Transaction" />
+                                 <br />
+                            </div>
+                            <hr />
+                        }
+                    <div class="@GetClass()">
+                        @if (DisplayVehicleInfo)
+                        {
+                            <div  class="border-dark border w-400px">
+                                 <VehicleInfo Vehicle=@VehicleInfo />
+
+                            </div>
+                        }
+                        <div>
+                            <TableView OnVehicleSelect="GetVehicleInfo" OnInsurance="GetInsuranceForm"  ViewRows="@Table"></TableView>
+                        </div>
+                        
+                       
+                    </div>
+                   
+                }
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" @onclick="OnExit" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+@code {
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]  
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public List<ViewVehicleMakeModel> Table { get; set; } = new List<ViewVehicleMakeModel>();
+
+    [Parameter]
+
+    public int Count { get; set; } = 0;
+
+
+
+
+    public bool DisplayVehicleInfo { get; set; } = false;
+
+    public bool DisplayInsuranceInfo { get; set; } = false;
+
+
+    AssetInsurances Transaction { get; set; } = new AssetInsurances {  InsDate = DateTime.Now, InsActionId = (int)InsuranceAction.AddInsurance};
+
+    public Vehicles VehicleInfo { get; set; } = new Vehicles();
+
+    async void OnExit()
+    {
+        await OnClose.InvokeAsync(false);
+    }
+
+
+    public string GetClass()
+    {
+        return (DisplayVehicleInfo) ? "d-flex justify-content-between" : "";
+    }
+
+
+    public async Task GetVehicleInfo(EventCallBackArgs args)
+    {
+        if (!args.Confirm)
+        {
+            DisplayVehicleInfo = false;
+            VehicleInfo = new Vehicles();
+            return;
+        }
+        DisplayVehicleInfo = true;
+        await Task.Delay(200);
+
+        VehicleInfo = await VehicleService.GetVehicle(args.VehicleId);
+
+    }
+
+    public  async Task GetInsuranceForm(EventCallBackArgs args)
+    {
+        DisplayInsuranceInfo = args.Confirm;
+        Transaction.VehPropId = args.VehicleId;
+
+        await Task.Delay(200);
+
+        VehicleInfo = await VehicleService.GetVehicle(args.VehicleId);
+    }
+
+
+}

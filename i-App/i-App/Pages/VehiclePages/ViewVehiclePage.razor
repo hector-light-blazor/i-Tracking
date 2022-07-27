@@ -1,0 +1,170 @@
+﻿@page "/Vehicle/View/{VehicleId:int}"
+
+@if (ShowModal)
+{
+    <ModalVehicleItems OnUpdate="OnUpdate" Items="Items" OnClose="OnCloseModal" Title="Add Vehicle Items" />
+}
+
+@if (errorModal)
+{
+    <ModalErrorMessage OnClose="OnErrorClose" Title="Validation Error" Message="@message" />
+}
+
+<div class="container">
+
+    <div class="row justify-content-center">
+   
+      <div class="col-xl-10">
+    
+         <div class="row">
+
+        <div class="col-xl-9">
+            <div class="d-flex justify-content-between">
+                <div>
+                     <h1 class="page-header">
+                        Vehicle View - @VehicleId
+                     </h1>
+                     <small class="text-danger">* Required Fields</small>
+                </div>
+                <div class="fixed-bottom" style="right: 20%; bottom: 20px; left: auto;">
+                    <button style="height: 60px; width: 60px; font-size: 30px;"
+                        class="btn btn-dark rounded-circle">
+                        <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                    </button>
+                </div>
+               
+            </div>
+   
+            <div class="mb-4">
+
+                <div id="DeptWidget" class="mb-5">
+                    <h4>Department Widget</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                     <DepartmentView Vehicle=@NewVehicle />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div id="VehicleWidget" class="mb-5">
+                    <h4>Vehicle Widget</h4>
+                     <h8 class="text-danger text-center">Note: Hidalgo County can insured only those vehicles where the County has title or is the Lease</h8>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <VehicleInfo Items=@Items ShowModal=@OnShowModal Vitems=@Vitems Vehicle=@NewVehicle />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                        <div class="hljs-container">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="VehTransacWidget" class="mb-5">
+                     <h4>Vehicle Transaction widget</h4>
+                    <p></p>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <VehTransacTableView Transaction=@Transaction />
+                                </div>
+                            </div>
+                        </div>
+                            <div class="card-arrow">
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                            <div class="hljs-container">
+    
+
+                            </div>
+                    </div>
+                </div>
+
+
+                <div id="InsTransacWidget" class="mb-5">
+                    <div class="d-flex justify-content-between">
+                        <h4>Insurance Widget</h4>
+                          @if (AppState.ViewAccount.IsAdmin())
+                          {
+                                <div class="p-1">
+                                    <button class="btn btn-primary text-white-200">Change Insurance</button>
+                                    <button class="btn btn-danger  text-white-200">Delete Insurance</button>
+                                    <button class="btn btn-success text-white-200">Send Insurance</button>
+                                </div>
+                                    
+                          }
+                    </div>
+                    <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                        @if(TransacInsurance.Count > 0)
+                                        {
+                                            <div class="col-xl-12">
+                                                <InsuranceTranTableView Transactions="TransacInsurance" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-xl-12">
+                                                <InsuranceTransaction />
+                                            </div>
+                                        }
+                                </div>
+                            </div>
+                            <div class="card-arrow">
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                                <div class="hljs-container">
+
+                                </div>
+                        </div>
+                 </div>
+
+            </div>
+
+    </div>
+                <div class="col-xl-3">
+                    <nav id="sidebar-bootstrap" class="navbar navbar-sticky d-none d-xl-block">
+                        <nav class="nav">
+                            <a class="nav-link active" href="Vehicle/View/@VehicleId#DeptWidget" target="_top" >Department Widget</a>
+                            <a class="nav-link" href="Vehicle/View/@VehicleId#VehicleWidget" target="_top" >Vehicle Widget</a>
+                            <a class="nav-link" href="Vehicle/View/@VehicleId#VehTransacWidget" target="_top">Vehicle Transactions Widget</a>
+                            <a class="nav-link" href="Vehicle/View/@VehicleId#InsTransacWidget"  target="_top" >Insurance Transactions widget</a>
+                        </nav>
+                    </nav>
+
+                </div>
+         </div>
+
+        </div>
+
+    </div>
+</div>

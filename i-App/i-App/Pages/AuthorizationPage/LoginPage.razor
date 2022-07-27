@@ -1,0 +1,91 @@
+﻿@page "/"
+@page "/login/{ErrorMessage}"
+@page "/login/Handler/{Account}"
+
+@using System.Text.Json
+@inject AppState AppState
+@inject NavigationManager NavigationManager
+@inject ProtectedLocalStorage BrowserStorage
+@attribute [AllowAnonymous]
+
+
+
+
+<AuthorizeView>
+    <Authorized>
+        <i_App.Controllers.UI.LoginRedirect></i_App.Controllers.UI.LoginRedirect>
+    </Authorized>
+    <NotAuthorized>
+        @if(ErrorMessage != null)
+        {
+               
+                <LoginDisplay>
+                        <div class="text-danger text-center">@ErrorMessage</div>
+                </LoginDisplay>
+          }
+          else{
+                <LoginDisplay></LoginDisplay>
+         }
+       
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+@code{
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+    [Parameter] public string ErrorMessage { get; set; } = string.Empty;
+    [Parameter] public string Account { get; set; } = string.Empty;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender && !string.IsNullOrEmpty(Account) && !string.IsNullOrEmpty(ErrorMessage)) // Add Vehicle
+        {
+            var result = await BrowserStorage.GetAsync<string>("account");
+
+
+            if(result.Success)
+            {
+                AppState.ViewAccount = JsonSerializer.Deserialize<ViewAccount>(result.Value);
+
+                //TODO: GRAB THE REMEMBER TIMESTAMP AND MAKE SURE THAT TODAY
+                //IS LESS THAN 7 DAYS
+                int res = DateTime.Compare(AppState.ViewAccount.Expire, DateTime.Now);
+                if (res >= 0)
+                {
+
+                   
+                    //navigate to dashboard..
+                    var user = (await AuthStat).User;
+                    if (string.IsNullOrEmpty(user.Identity.Name))
+                    {
+
+                        NavigationManager.NavigateTo("account/setup");
+                    }
+                    else { 
+                         NavigationManager.NavigateTo("/Dashboard");
+                    }
+                }
+            }
+        }
+        else if(firstRender && !string.IsNullOrEmpty(Account))
+        {
+            //Save to the local storage...
+             int res = DateTime.Compare(AppState.ViewAccount.Expire, DateTime.Now);
+
+            //Only if expire is greater than today date we will save to local storage..
+            if (res > 0)
+            {
+                await BrowserStorage.SetAsync("account", JsonSerializer.Serialize<ViewAccount>(AppState.ViewAccount));
+            }
+
+
+        }
+    }
+
+
+
+}

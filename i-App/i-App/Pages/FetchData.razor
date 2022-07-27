@@ -1,0 +1,44 @@
+﻿@page "/fetchdata"
+
+<PageTitle>Weather forecast</PageTitle>
+
+@using i_App.Data
+@using i_App.Data.models
+
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@*@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.AssetTypeId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}*@
+
+@code {
+    //private List<Vehicles> forecasts;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    forecasts = await ForecastService.GetAllVechicles("1");
+    //}
+}

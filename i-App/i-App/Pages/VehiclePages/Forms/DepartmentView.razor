@@ -1,0 +1,89 @@
+﻿<h3>Department Information</h3>
+                        <hr />
+                        <br />
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="FormControlDept">Department Name</label>
+                            <select @bind="DepId" class="form-select" id="FormControlDept" disabled=@AppState?.ViewAccount?.Disabled()>
+                            
+                            
+                                <option value=0>Select Department</option>
+                                @foreach (var department in Departments)
+                                {
+                                    <option value="@department.DepId">@department.DepName</option>
+                                }
+
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label text-danger" for="FormControlLocation">* Location Name</label>
+                            <select role="button" @bind="@Vehicle.LocationId" class="form-select pointer" id="FormControlLocation" required>
+                                <option value=0>Select Location</option>
+                                @foreach (var locations in GetLocations())
+                                {
+                                    <option value="@locations.LocationId">@locations.LocationName</option>
+                                }
+
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlRep">Representative</label>
+                                    <select @bind="Account.UserId" class="form-select" id="FormControlRep" disabled=@AppState?.ViewAccount?.Disabled()>
+                                        <option value=0>Select Representative: </option>
+                                        @foreach (var rep in GetRepresentatives())
+                                        {
+                                            <option value="@rep.UserId">@rep.Email</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label @AppState?.ViewAccount?.IsAdminClass()" for="FormControlExtension">Extension</label>
+                                    <input @bind="Account.Extension" type="text" class="form-control" id="FormControlExtension" disabled=@AppState?.ViewAccount?.Disabled()>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlEmail">Email</label>
+                                    <input @bind="Account.Email" type="email" class="form-control text-muted" id="FormControlEmail" disabled=@AppState?.ViewAccount?.Disabled()>
+                                </div>
+                                <div class="w-25"></div>
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlPO">Purchase Order #</label>
+                                    <input @bind="Vehicle.PoNumber" type="text" class="form-control text-muted" id="FormControlPO">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label text-danger" for="FormControlReqNumber">*Requisition Number</label>
+                                    <input @bind="Vehicle.ReqNum" type="text" class="form-control text-muted" id="FormControlReqNumber">
+                                </div>
+                                <div class="w-25"></div>
+                                <div class="w-50">
+                                    <label class="form-label text-danger" for="FormControlESArr">*Estimated Arrival</label>
+                                    <input @bind="Vehicle.EstimateDate" type="date" class="form-control text-muted" id="FormControlESArr">
+                                </div>
+                            </div>
+                        </div>
+                        @*<h3>Court Information</h3>
+                        <hr />
+                        <br />
+<div class="form-group mb-3 line-height-16px">
+<div class="d-flex justify-content-between">
+    <div class="w-50">
+        <label class="form-label">Commissioner Court Date</label>
+        <input @bind="transaction.CommCourtDate" type="date" class="form-control" />
+    </div>
+    <div class="w-25"></div>
+    <div class="w-50">
+        <label class="form-label">Agenda Item#</label>
+        <input @bind="transaction.AgendaItem" type="text" class="form-control" />
+    </div>
+</div>
+</div>*@
+

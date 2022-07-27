@@ -1,0 +1,255 @@
+﻿
+<div class="table-responsive">
+    <div class="input-group mb-4">
+    <div class="flex-fill position-relative">
+        <div class="input-group">
+                <input type="text" @bind-value="Search" @bind-value:event="oninput" @onkeypress="KeyboardEventHandler"  class="form-control px-35px" placeholder="Filter Vehicles">
+            <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1020;">
+                <i class="fa fa-search opacity-5"></i>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-outline-default rounded-0" type="button" >
+        <span class="d-none d-md-inline">Search</span>
+    </button>
+
+</div>
+                        <table class="table table-hover text-nowrap w-100">
+                            <thead>
+                                    @if (AppState.ViewAccount.Roles.RoleId == (int)RolesStats.Purchasing)
+                                    {
+                
+                                        <tr>
+                                            <th class="border-top-0 pt-0 pb-2">Vehicle Id</th>
+                                            <th class="border-top-0 pt-0 pb-2">Req Number</th>
+                                            <th class="border-top-0 pt-0 pb-2">PO Number</th>
+                                            <th class="border-top-0 pt-0 pb-2">Make</th>
+                                            <th class="border-top-0 pt-0 pb-2">Model</th>
+                                            <th class="border-top-0 pt-0 pb-2">Book Value</th>
+                                            <th class="border-top-0 pt-0 pb-2">Status</th>
+                                        </tr>
+                                    }else if(AppState.ViewAccount.IsAdmin())
+                                    {
+                                            <tr>
+                                                <th class="border-top-0 pt-0 pb-2">Vehicle Id</th>
+                                                <th class="border-top-0 pt-0 pb-2">Req Number</th>
+                                                <th class="border-top-0 pt-0 pb-2">Make</th>
+                                                <th class="border-top-0 pt-0 pb-2">Model</th>
+                                                <th class="border-top-0 pt-0 pb-2">Book Value</th>
+                                                <th class="border-top-0 pt-0 pb-2">Status</th>
+                                                <th class="border-top-0 pt-0 pb-2">Actions</th>
+                                            </tr>
+                                    }else
+                                    {
+                                            <tr>
+                                                <th class="border-top-0 pt-0 pb-2">Vehicle Id</th>
+                                                <th class="border-top-0 pt-0 pb-2">Req Number</th>
+                                                <th class="border-top-0 pt-0 pb-2">Make</th>
+                                                <th class="border-top-0 pt-0 pb-2">Model</th>
+                                                <th class="border-top-0 pt-0 pb-2">Book Value</th>
+                                                <th class="border-top-0 pt-0 pb-2">Status</th>
+                                            </tr>
+                                    }
+
+           
+                            </thead>
+                            <tbody>
+
+                                 @if (AppState.ViewAccount.Roles.RoleId == (int)RolesStats.Purchasing)
+                            {
+                
+                                   @foreach(var vehicle in ViewRows)
+                                 {
+                                     <tr>
+                                        <td class="w-10px align-middle">
+                                           <a @onclick="OnRouteChange" href="/Vehicle/View/@vehicle.VehicleId">
+                                                @vehicle.VehicleId
+                                            </a>
+                                         </td>
+                                        <td>
+                                            @vehicle.ReqNum
+                                        </td>
+                                        <td class="align-middle">
+                                            <input type="text" @bind-value=@vehicle.PoNumber @bind-value:event="oninput" @onkeypress="(e) => KeyBoardSave(e, vehicle)" />
+                                        </td>
+                                        <td class="align-middle">
+                                            @vehicle.MakeName
+                                        </td>
+                                        <td class="align-middle">
+                                           @vehicle.ModelName
+                                        </td>
+                                        <td>
+                                            @vehicle.FormattedAmount
+                                        </td>
+                                        <td class="py-1 align-middle">
+                                            <span class="badge border @vehicle.StatusClass() px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center">
+                                                <i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                                                @vehicle.status_name
+                                            </span>
+                                        </td>
+                                         @if (vehicle.IsActionable())
+                                                {
+                                        <td class="align-middle">
+                                           
+                                                    <div class="keep-open btn-group" title="Columns">
+                                                        <button @onclick="@vehicle.OnToggle" class="btn btn-secondary dropdown-toggle @vehicle.toggleOptions" type="button" data-bs-toggle="dropdown" aria-label="Columns" title="Columns" aria-expanded="false">
+                                                            <i class="bi bi-list-ul"></i>
+                                                            Options
+                                                        </button>
+                                                        <div class="dropdown-menu dropdown-menu-right @vehicle.toggleOptions" style="transform: translate(0px, 37px);">
+                                                            <label class="dropdown-item dropdown-item-marker text-center">
+                                                                <button class="btn btn-outline-theme w-75">Transfer</button>
+                                                            </label>
+                                                            <label class="dropdown-item dropdown-item-marker text-center">
+                                                                <button class="btn btn-outline-theme w-75">Delete</button>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                        
+                                            </td>
+                                                    }
+                                     </tr>          
+                }
+            }
+            else if (AppState.ViewAccount.IsAdmin())
+            {
+        
+                
+                                   @foreach(var vehicle in ViewRows)
+                                 {
+                                     <tr  class="@vehicle.IsActive">
+                                        <td class="w-10px align-middle">
+                                           <a @onclick="OnRouteChange" href="/Vehicle/View/@vehicle.VehicleId">
+                                                @vehicle.VehicleId
+                                            </a>
+                                         </td>
+                                        <td class="align-middle">
+                                            @vehicle.ReqNum
+                                        </td>
+                                        <td class="align-middle">
+                                           @vehicle.PoNumber
+                                        </td>
+                                        <td class="align-middle">
+                                            @vehicle.MakeName
+                                        </td>
+                                        <td class="align-middle">
+                                           @vehicle.ModelName
+                                        </td>
+                                        <td class="align-middle">
+                                            @vehicle.FormattedAmount
+                                        </td>
+                                        <td class="py-1 align-middle">
+                                            <span class="badge border @vehicle.StatusClass() px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center">
+                                                <i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                                                @vehicle.status_name
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            @if (vehicle.IsActionable())
+                                            {
+                                                 <div class="keep-open btn-group" title="Columns">
+                                                    <button @onclick="@vehicle.OnToggle" class="btn btn-secondary dropdown-toggle @vehicle.toggleOptions" type="button" data-bs-toggle="dropdown" aria-label="Columns" title="Columns" aria-expanded="false">
+                                                        <i class="bi bi-list-ul"></i>
+                                                         Options
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right @vehicle.toggleOptions" style="transform: translate(0px, 37px);">
+                                                        <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button class="btn btn-outline-theme w-75">Transfer</button>
+                                                        </label>
+                                                         <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button class="btn btn-outline-theme w-75">Delete</button>
+                                                        </label>
+                                                     </div>
+                                            </div>
+                                            }else
+                                            {
+                                                <div class="keep-open btn-group" title="Columns">
+                                                    <button @onclick=@vehicle.OnToggle class="btn btn-secondary dropdown-toggle @vehicle.toggleOptions" type="button">
+                                                        <i class="bi bi-list-ul"></i>
+                                                         Options
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right @vehicle.toggleOptions" style="transform: translate(0px, 37px);">
+                                                        <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button @onclick="() => { OnVehicleView(vehicle); vehicle.OnToggle(); }" class="btn btn-outline-theme w-75">Vehicle Info</button>
+                                                        </label>
+                                                         <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button @onclick="() => { OnInsuranceView(vehicle); vehicle.OnToggle(); }" class="btn btn-outline-theme w-75">Insurance</button>
+                                                        </label>
+                                                     </div>
+                                            </div>
+                                            }
+
+                                        </td>
+                                     </tr>     
+                                     }     
+            }
+            else
+                            {
+                                     @foreach(var vehicle in ViewRows)
+                                 {
+                                     <tr>
+                                        <td class="w-10px align-middle">
+                                           <a @onclick="OnRouteChange" href="/Vehicle/View/@vehicle.VehicleId">
+                                                @vehicle.VehicleId
+                                            </a>
+                                         </td>
+                                        <td>
+                                            @vehicle.ReqNum
+                                        </td>
+
+                                        <td>
+                                            @vehicle.MakeName
+                                        </td>
+                                        <td class="align-middle">
+                                           @vehicle.ModelName
+                                        </td>
+                                        <td>
+                                            @vehicle.FormattedAmount
+                                        </td>
+                                        <td class="py-1 align-middle">
+                                            <span class="badge border @vehicle.StatusClass() px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center">
+                                                <i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                                                @vehicle.status_name
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            @if (vehicle.IsActionable())
+                                            {
+                                                 <div class="keep-open btn-group" title="Columns">
+                                                    <button @onclick="@vehicle.OnToggle" class="btn btn-secondary dropdown-toggle @vehicle.toggleOptions" type="button" data-bs-toggle="dropdown" aria-label="Columns" title="Columns" aria-expanded="false">
+                                                        <i class="bi bi-list-ul"></i>
+                                                         Options
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right @vehicle.toggleOptions" style="transform: translate(0px, 37px);">
+                                                        <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button class="btn btn-outline-theme w-75">Transfer</button>
+                                                        </label>
+                                                         <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button class="btn btn-outline-theme w-75">Delete</button>
+                                                        </label>
+                                                     </div>
+                                            </div>
+                                            }else
+                                            {
+                                               <span >No Action Available</span>
+                                            }
+
+                                        </td>
+                                     </tr>          
+                                }
+                            }
+
+
+                               
+           
+                            </tbody>
+                        </table>
+
+        <PaginationDisplay  
+            OnReady="OnReady"
+            OnChange="ChangeTable"
+            @ref="PagiPage" 
+            Size=@AppState.MasterTableView.Count />
+
+    
+</div>

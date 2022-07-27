@@ -1,0 +1,283 @@
+﻿@page "/Vehicles/List"
+@attribute [Authorize]
+@inject VehicleService VehicleService
+@inject AppState AppState
+
+<div class="card">
+    <ul class="nav nav-tabs nav-tabs-v2 px-4">
+        <li @onclick="OnRefresh" role="button" class="nav-item me-3"><span  class="nav-link @toggle.AllTag px-2" data-bs-toggle="tab">All</span></li>
+        <li @onclick="OnPending" role="button" class="nav-item me-3"><span  class="nav-link @toggle.PendingTag px-2" data-bs-toggle="tab">PENDING</span></li>
+        <li @onclick="OnMe" role="button" class="nav-item me-3"><span  class="nav-link @toggle.MeTag px-2" data-bs-toggle="tab">MINE</span></li>
+    </ul>
+<div class="tab-content p-4">
+<div class="tab-pane fade show active" id="allTab">
+
+<div class="input-group mb-4">
+    <div class="flex-fill position-relative">
+        <div class="input-group">
+                <input type="text" @bind-value="Search" @bind-value:event="oninput" @onkeypress="KeyboardEventHandler" class="form-control px-35px" placeholder="Filter Vehicles">
+            <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1020;">
+                <i class="fa fa-search opacity-5"></i>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-outline-default rounded-0" type="button" >
+        <span class="d-none d-md-inline">Search</span>
+    </button>
+
+</div>
+
+            @if (!Ready)
+            {
+               <SkeletonTable OnReady="OnLoad" />  
+            }
+            else
+            {
+                 <div class="table-responsive">
+                        <table class="table table-hover text-nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 pt-0 pb-2">Vehicle Id</th>
+                                    <th class="border-top-0 pt-0 pb-2">Req Number</th>
+                                    <th class="border-top-0 pt-0 pb-2">Make</th>
+                                    <th class="border-top-0 pt-0 pb-2">Model</th>
+                                    <th class="border-top-0 pt-0 pb-2">Book Value</th>
+                                    <th class="border-top-0 pt-0 pb-2">Status</th>
+                                    <th class="border-top-0 pt-0 pb-2">Actions</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 @foreach(var vehicle in ViewRows)
+                                 {
+                                     <tr>
+                                        <td class="w-10px align-middle">
+                                           <a href="/Vehicle/View/@vehicle.VehicleId">
+                                                @vehicle.VehicleId
+                                            </a>
+                                         </td>
+                                        <td>
+                                            @vehicle.ReqNum
+                                        </td>
+                                        <td>
+                                            @vehicle.MakeName
+                                        </td>
+                                        <td class="align-middle">
+                                           @vehicle.ModelName
+                                        </td>
+                                        <td>
+                                            @vehicle.FormattedAmount
+                                        </td>
+                                        <td class="py-1 align-middle">
+                                            <span class="badge border @vehicle.StatusClass() px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center">
+                                                <i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                                                @vehicle.status_name
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            @if (vehicle.IsActionable())
+                                            {
+                                                 <div class="keep-open btn-group" title="Columns">
+                                                    <button @onclick="@vehicle.OnToggle" class="btn btn-secondary dropdown-toggle @vehicle.toggleOptions" type="button" data-bs-toggle="dropdown" aria-label="Columns" title="Columns" aria-expanded="false">
+                                                        <i class="bi bi-list-ul"></i>
+                                                         Options
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right @vehicle.toggleOptions" style="transform: translate(0px, 37px);">
+                                                        <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button class="btn btn-outline-theme w-75">Transfer</button>
+                                                        </label>
+                                                         <label class="dropdown-item dropdown-item-marker text-center">
+                                                            <button class="btn btn-outline-theme w-75">Delete</button>
+                                                        </label>
+                                                     </div>
+                                            </div>
+                                            }else
+                                            {
+                                               <span >No Action Available</span>
+                                            }
+
+                                        </td>
+                                     </tr>          
+                                }
+           
+                            </tbody>
+                        </table>
+                    </div>
+                   
+            }
+
+             <PaginationDisplay  OnChange="ChangeTable" @ref="PagiPage" Size="MasterView.Count" />
+          
+</div>
+</div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+@code{
+    public List<ViewVehicleMakeModel> MasterView = new List<ViewVehicleMakeModel>();
+    public List<ViewVehicleMakeModel> ViewRows = new List<ViewVehicleMakeModel>();
+    public bool   Ready { get; set; } = false;
+    public string Search { get; set; } = "";
+    PaginationDisplay? PagiPage;
+
+    private Toggle toggle = new Toggle
+    {
+        AllTag = "active",
+        PendingTag = ""
+    };
+
+    public int PaginationSize = 0;
+    public int TOTAL_ROWS = 10;
+    public int Skip = 0;
+
+
+    public async Task OnLoad()
+    {
+        // IF any of this are not empty quit the onload..
+        // This is creating a bug..
+        if(!string.IsNullOrEmpty(toggle.PendingTag) || !string.IsNullOrEmpty(toggle.MeTag))
+        {
+            return;
+        }
+        await OnRefresh();
+    }
+
+    public async Task OnRefresh()
+    {
+        toggle.SetActive(ToggleOperator.ALL);
+        Ready = false;
+
+
+        if (ViewRows != null){
+            ViewRows.Clear();
+        }
+        if(MasterView != null)
+        {
+            MasterView.Clear(); 
+        }
+
+
+        await Task.Delay(1500);
+
+        if (AppState.ViewAccount.IsAdmin())
+        {
+            MasterView = await VehicleService.GetAllVehicles();
+        }
+        else
+        {
+
+            MasterView = await VehicleService.GetAllVehiclesByDept(AppState.ViewAccount.DepId);
+        }
+
+
+
+
+        //Then get only the first 10 ROWS..
+        ViewRows = MasterView.Take(TOTAL_ROWS).ToList();
+        Ready = true;
+        PagiPage.Build(MasterView.Count);
+    }
+
+    public async Task OnPending()
+    {
+        toggle.SetActive(ToggleOperator.PENDING);
+        if (ViewRows != null){
+            ViewRows.Clear();
+        }
+        if(MasterView != null)
+        {
+            MasterView.Clear(); 
+        }
+
+
+        Ready = false;
+        await Task.Delay(1500);
+
+        if (AppState.ViewAccount.IsAdmin())
+        {
+            MasterView = await VehicleService.GetAllPendingVehicles();
+        }
+        else if (AppState.ViewAccount.Roles.RoleId == (int)RolesStats.Purchasing)
+        {
+            MasterView = await VehicleService.GetPendingWithoutPOVehicles();
+        }
+        else
+        {
+            MasterView = await VehicleService.GetAllPendingVehiclesByDept(AppState.ViewAccount.DepId);
+        }
+        //Then get only the first 10 ROWS..
+        ViewRows = MasterView.Take(TOTAL_ROWS).ToList();
+        PagiPage.Build(MasterView.Count);
+        Ready = true;
+    }
+
+     public async Task OnMe()
+    {
+        toggle.SetActive(ToggleOperator.ME);
+        if (ViewRows != null){
+            ViewRows.Clear();
+        }
+        if(MasterView != null)
+        {
+            MasterView.Clear(); 
+        }
+        
+        Ready = false;
+        await Task.Delay(1500);
+        MasterView = await VehicleService.GetAllVehiclesByUser(AppState.ViewAccount.UserId);
+        //Then get only the first 10 ROWS..
+        ViewRows = MasterView.Take(TOTAL_ROWS).ToList();
+        PagiPage.Build(MasterView.Count);
+        Ready = true;
+        
+    }
+
+    public void ChangeTable(PaginationPage page)
+    {
+        // Skip and Take only the rows desire..
+        Skip = (page.Number - 1) * TOTAL_ROWS;
+
+        ViewRows = MasterView.Skip(Skip).Take(TOTAL_ROWS).ToList();
+    }
+
+    private void KeyboardEventHandler(KeyboardEventArgs e)
+    {
+        int VehicleID = 0;
+        System.Diagnostics.Debug.WriteLine($"KEY {e.Key}");
+        if(e.Key == "Enter")
+        {
+
+            System.Diagnostics.Debug.WriteLine($"VALUE {Search}");
+            if(!string.IsNullOrEmpty(Search) && Int32.TryParse(Search, out VehicleID))
+            {
+                ViewRows = MasterView.Where(c => c.VehicleId.Equals(VehicleID)).ToList();
+               
+
+                PagiPage.Build(ViewRows.Count);
+            }
+            else if (!string.IsNullOrEmpty(Search))
+            {
+                var result = Search.ToLower();
+                ViewRows = MasterView.Where(c => c.MakeName.ToLower().Contains(result) || c.ModelName.ToLower().Contains(result)).ToList();
+                PagiPage.Build(ViewRows.Count);
+            }
+            else if (string.IsNullOrEmpty(Search))
+            {
+                ViewRows = MasterView.Take(TOTAL_ROWS).ToList();
+                PagiPage.Build(MasterView.Count);
+            }
+
+             Search = "";
+
+
+        }
+    }
+
+   
+
+}

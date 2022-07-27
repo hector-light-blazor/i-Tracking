@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "kHAaMWVX2/Ro23vczP+iDt9mJ8aFPDVGv5nnTQgBoZ4LwYYi8Ybmi/4DGumKcHrOx7+cR/+IMtJNKQh5aReEHw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\hector.chapa\\source\\repos\\Test\\i-app\\i-App\\TestApplication\\TestApplication.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\hector.chapa\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\hector.chapa\\.nuget\\packages\\system.directoryservices\\6.0.0\\system.directoryservices.6.0.0.nupkg.sha512",
+    "C:\\Users\\hector.chapa\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
+    "C:\\Users\\hector.chapa\\.nuget\\packages\\system.security.accesscontrol\\6.0.0\\system.security.accesscontrol.6.0.0.nupkg.sha512",
+    "C:\\Users\\hector.chapa\\.nuget\\packages\\system.security.permissions\\6.0.0\\system.security.permissions.6.0.0.nupkg.sha512",
+    "C:\\Users\\hector.chapa\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

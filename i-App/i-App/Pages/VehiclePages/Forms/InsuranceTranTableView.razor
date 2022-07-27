@@ -1,0 +1,37 @@
+﻿<table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Action</th>
+          <th scope="col">Insured Date</th>
+          <th scope="col">Insurance Type</th>
+          <th scope="col">Asset Coverage</th>
+          <th scope="col">Contents Coverage</th>
+        </tr>
+      </thead>
+  <tbody>
+
+      @foreach(var transaction in Transactions)
+      {
+            <tr>
+              <th scope="row">
+                    @Enum.GetName(typeof(InsuranceAction), transaction.InsActionId)
+              </th>
+              <td>
+                  @transaction.InsDate
+              </td>
+              <td>
+                  
+                  @Enum.GetName(typeof(InsuranceType), @transaction.InsTypeId)
+                  
+              </td>
+              <td>
+                  @transaction.AssetCoverage?.ToString("C")
+              </td>
+              <td>
+                  @transaction.ContentsCoverage?.ToString("C")
+              </td>
+
+            </tr>
+      }
+  </tbody>
+</table>

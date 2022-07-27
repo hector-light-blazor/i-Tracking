@@ -1,0 +1,25 @@
+﻿<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Action</th>
+      <th scope="col">Transaction Date</th>
+      <th scope="col">Comm Court Date</th>
+      <th scope="col">Agenda Item</th>
+    </tr>
+  </thead>
+  <tbody>
+        @foreach(var transaction in Transaction)
+        {
+            <tr>
+              <th scope="row">
+                  @Enum.GetName(typeof(AssetAction), transaction.AsstActionId)
+              </th>
+              <td>@transaction.TranDate</td>
+              <td>@transaction.CommCourtDate</td>
+              <td>@transaction.AgendaItem</td>
+            </tr>
+
+        }
+  </tbody>
+</table>
+

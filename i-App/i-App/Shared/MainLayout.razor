@@ -1,0 +1,55 @@
+﻿@inherits LayoutComponentBase
+@inject ProtectedLocalStorage BrowserStorage
+@inject AppState AppState
+@inject AuthorizeService AuthorizeService
+@inject InsuranceService InsuranceService
+
+
+@using System.Text.Json
+
+<PageTitle>i-App</PageTitle>
+<Loading></Loading>
+ <Toast />
+<AuthorizeView>
+    <Authorized>
+         <div id="app" class="app @ShowMenu">
+            <div id="header" class="app-header">
+                <NavMenu OnToggle="HandleMenuToggle" />
+            </div>
+            <div id="sidebar" class="app-sidebar">
+                <SideBar />
+            </div>
+
+            <div id="content" class="app-content">
+                   
+                    @Body
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        @Body
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+
+    private string ShowMenu = "app-sidebar-toggled";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+
+        AppState.Roles = await AuthorizeService.GetRoles();
+        AppState.InsTypes = await InsuranceService.GetInsuranceTypes();
+
+    }
+
+    private void HandleMenuToggle()
+    {
+        ShowMenu = ShowMenu.Equals("app-sidebar-toggled") ? "app-sidebar-collapsed" : "app-sidebar-toggled";
+    }
+}
+       
+

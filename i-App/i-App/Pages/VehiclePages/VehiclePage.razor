@@ -1,0 +1,331 @@
+﻿
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject DepartmentService DepartmentService
+@inject AssetService AssetService
+@inject VehicleService VehicleService
+@inject AuthorizeService AuthorizeService
+@inject AppState AppState
+@inject IJSRuntime JS
+@namespace i_App.Shared.Modals
+
+
+
+
+@if (errorModal)
+{
+    <ModalErrorMessage OnClose="OnErrorClose" Title="Validation Error" Message="@message" />
+}
+
+<div id="formControls" class="mb-5">
+    @*<h4 class="text-center">Add Vehicle</h4>*@
+    <div>
+        <p class="text-danger">* Required Fields</p>
+        Vehicle Record @RecordID
+    </div>
+    <div class="card">
+        <div class="card-body pb-2">
+            <form>
+                <div class="row">
+                    <InsuranceTransaction />
+                </div>
+                <div class="row">
+                    @*end of col xl 6*@
+                    <VehicleInfo Items=@Items ListAssetTypes=@ListAssetTypes Vitems=@vItems
+                        OnModal="OnShowModal" NewVehicle=@NewVehicle />
+                </div>
+            </form>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+        <div class="hljs-container rounded-bottom">
+            <button @onclick="OnSubmit" class="btn btn-success">Submit</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int VehicleId { get; set; } = 0;
+
+    // tHIS VARIABLES TO ADD AND RETREIVE INFORMATION
+    public Vehicles NewVehicle = new Vehicles();
+    public AssetTransactions transaction = new AssetTransactions();
+    public ViewAccount account = new ViewAccount();
+
+   
+   
+
+    private string message { get; set; } = "";
+    private bool showModal { get; set; } = false;
+    private bool errorModal { get; set; } = false;
+    
+    public List<Items> Items { get; set; } = new List<Items>();
+    public List<VehicleItems> vItems = new List<VehicleItems>();
+    public List<AssetTypes> ListAssetTypes = new List<AssetTypes>();
+    public string start { get; set; } = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        start = NavManager.Uri;
+
+
+        System.Diagnostics.Debug.WriteLine("I AM INITIALIZED");
+
+        await Task.Delay(500);
+        //Grab initial data as needed...
+        GrabData();
+
+        //If Vehicle ID is empty then is consider new vehicle
+        DetermineIFNewOrSearch();
+
+        // Get Asset Types.. Based on Vehicles only..
+        ListAssetTypes = await AssetService.GetAssetTypesByID(NewVehicle.AssetId ?? 0);
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        // In case you already in this route and the user re presses to add a new record.
+        if (!start.Equals(NavManager.Uri))
+        {
+            System.Diagnostics.Debug.WriteLine($"I SHOULD RE RUN: {start}");
+            //Grab initial data as needed...
+            //GrabData();
+
+            //If is add need to change VehicleID to null
+            if (NavManager.Uri.Contains("Add"))
+                VehicleId = 0;
+
+            //Reset some values...
+            NewVehicle = new Vehicles();
+            transaction = new AssetTransactions();
+            account = new ViewAccount();
+
+
+
+            // Determine if to add or search..
+            DetermineIFNewOrSearch();
+        }
+        System.Diagnostics.Debug.WriteLine($"I RAN WHAT: {start}");
+    }
+
+    public async void GrabData()
+    {
+        
+        Items = await VehicleService.GetVehicleItems();
+    }
+
+    public async void DetermineIFNewOrSearch()
+    {
+        if (NavManager.Uri.Contains("Add")) // Add Vehicle
+        {
+            account = AppState.ViewAccount;
+            ProcessNewRecord();
+
+            ProcessNewTransaction();
+
+        }
+        else // Search Vehicle..
+        {
+            //Vehicle exists lets search for that vehicle from database...
+            NewVehicle = await VehicleService.GetVehicle(VehicleId);
+            account = await AuthorizeService.GetAccount(NewVehicle.UserId ?? 0);
+            transaction = await AssetService.GetAsseTransactions(NewVehicle.VehicleId, NewVehicle.AssetId ?? 0);
+            vItems = await VehicleService.GetVehicleItems(NewVehicle.VehicleId);
+
+            System.Diagnostics.Debug.WriteLine($"VALUE : {transaction.TransactionId}");
+            if (transaction.TransactionId == 0)
+                ProcessNewTransaction();
+
+            //Reset Values as needed..
+            ResetValues();
+
+        }
+    }
+
+    public async void ProcessNewTransaction()
+    {
+
+        transaction.VehPropId = NewVehicle.VehicleId;
+        transaction.AssetId = NewVehicle.AssetId;
+        transaction.AsstActionId = (int)AssetAction.AddAsset;
+        transaction.TranDate = DateTime.Now;
+        //Send to database for saving.
+        transaction = await AssetService.AddAssetTransaction(transaction);
+    }
+
+    public void ResetValues()
+    {
+        if (NewVehicle.MakeId == AppState.DEFAULT_MAKE)
+        {
+            NewVehicle.MakeId = AppState.RESET_ZERO;
+            NewVehicle.YearId = AppState.RESET_ZERO;
+        }
+        if (NewVehicle.ModelId == AppState.DEFAULT_MODEL)
+        {
+            NewVehicle.ModelId = AppState.RESET_ZERO;
+        }
+
+        if (NewVehicle.AcqId == AppState.DEFAULT_ACQID)
+        {
+            NewVehicle.AcqId = AppState.RESET_ZERO;
+        }
+
+        if (NewVehicle.AssetTypeId == AppState.DEFAULT_ASS_TYPE_ID)
+        {
+            NewVehicle.AssetTypeId = AppState.RESET_ZERO;
+        }
+    }
+
+    public async void ProcessNewRecord()
+    {
+    
+
+        //Lets send the new Vehicle for the initial to get a return Vehicleid from database...
+        NewVehicle.AssetId = AppState.DEFAULT_VEHICLE;
+        NewVehicle.UserId = account.UserId;
+        NewVehicle.StatusId = AppState.STATUS_PENDING; // Is for Pending.
+        NewVehicle.DepId = account.DepId;
+        NewVehicle.MakeId = AppState.DEFAULT_MAKE;
+        NewVehicle.ModelId = AppState.DEFAULT_MODEL;
+        NewVehicle.AcqId = AppState.DEFAULT_ACQID;
+        NewVehicle.AcqDate = DateTime.Today;
+        NewVehicle.AssetTypeId = AppState.DEFAULT_ASS_TYPE_ID;
+       
+        //NewVehicle.YearId = ListAssetYears.Where(t => t.YearNum.Equals(DateTime.Now.Year))
+        //                    .Select(s => s.YearId).First();
+
+        //Send to database for saving.
+        NewVehicle = await VehicleService.AddVehicle(NewVehicle);
+
+
+        //Reset Values to Zero
+        NewVehicle.YearId = NewVehicle.LocationId = NewVehicle.AssetTypeId = NewVehicle.MakeId = NewVehicle.ModelId = NewVehicle.AcqId = AppState.RESET_ZERO;
+
+
+    }
+
+   
+
+    
+
+
+    public string IsSelected()
+    {
+        return (NewVehicle.UserId == 0) ? "selected" : "";
+    }
+
+    //Check that all validations are in order
+    public bool checkValidation()
+    {
+        if (NewVehicle.LocationId == AppState.RESET_ZERO)
+        {
+            errorModal = true;
+            message = "Please enter Location Name?";
+            return false;
+        }
+        else if (NewVehicle.AcqId == AppState.RESET_ZERO)
+        {
+            errorModal = true;
+            message = "Please enter vehicle acquired?";
+            return false;
+        }
+        else if (NewVehicle.AssetTypeId == AppState.RESET_ZERO)
+        {
+            errorModal = true;
+            message = "Please enter asset type?";
+            return false;
+        }
+        else if (NewVehicle.MakeId == AppState.RESET_ZERO)
+        {
+            errorModal = true;
+            message = "Please enter Make?";
+            return false;
+        }
+        else if (NewVehicle.ModelId == AppState.RESET_ZERO)
+        {
+            errorModal = true;
+            message = "Please enter Model?";
+            return false;
+        }
+        else if (NewVehicle.YearId == AppState.RESET_ZERO)
+        {
+            errorModal = true;
+            message = "Please enter Year?";
+            return false;
+        }
+        else if (NewVehicle.ReqNum == null)
+        {
+            errorModal = true;
+            message = "Please enter Requisition Number?";
+            return false;
+        } else if (NewVehicle.EstimateDate == null)
+        {
+             errorModal = true;
+            message = "Please enter Estiamted Arrival?";
+            return false;
+        }
+        else if (string.IsNullOrEmpty(NewVehicle.TitleName))
+        {
+            errorModal = true;
+            message = "Please enter Title Name or Lease?";
+            return false;
+        }
+
+        return true;
+
+    }
+
+
+    public async void OnSubmit()
+    {
+        if (!checkValidation())
+        {
+            await JS.InvokeVoidAsync("addModal", "");
+            return;
+        }
+        NewVehicle = await VehicleService.UpdateVehicle(NewVehicle);
+        transaction = await AssetService.UpdateAssetTransaction(transaction);
+        await VehicleService.AddListVehicleItems(vItems);
+
+        NavManager.NavigateTo("/Dashboard");
+
+    }
+
+
+    //This Function is to get all item from Modal..
+    void OnUpdate(VehicleItems item)
+    {
+        item.VehicleId = NewVehicle.VehicleId;
+        vItems.Add(item);
+    }
+    async void OnShowModal()
+    {
+        showModal = true;
+        await JS.InvokeVoidAsync("addModal", "");
+    }
+
+    async void OnCloseModal(bool res)
+    {
+        showModal = res;
+        await JS.InvokeVoidAsync("removeModal", "");
+    }
+
+    async void OnErrorClose()
+    {
+        errorModal = false;
+        await JS.InvokeVoidAsync("removeModal");
+    }
+
+    public int RecordID
+    {
+        get { return (string.IsNullOrEmpty(NewVehicle.VehicleId.ToString())) ? 0 : NewVehicle.VehicleId; }
+    }
+}

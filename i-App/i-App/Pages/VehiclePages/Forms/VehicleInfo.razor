@@ -1,0 +1,161 @@
+﻿
+                        <h3>Vehicle Information</h3>
+                        <hr />
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label text-danger" for="FormControlAcQuired">*How was the vehicle acquired?</label>
+                                    <select @bind="Vehicle.AcqId" role="button" class="form-select" id="FormControlAcQuired" required>
+                                        <option value=0>Select AcQuisition</option>
+                                        @foreach (var acqu in ListAcqus)
+                                        {
+                                            <option value="@acqu.AcqId">@acqu.AcqName</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div class="w-25">
+                                    <label class="form-label" for="FormControlAcqDate">Vehicle Received Date</label>
+                                    <input @bind="Vehicle.RcvdDate" type="date" class="form-control" id="FormControlAcqDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label text-danger" for="FormControlTitle">* Name on Title or Lease</label>
+                            <input @bind="Vehicle.TitleName" type="text" class="form-control" id="FormControlTitle">
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlAssName">Asset Name</label>
+                                    <select @bind="Vehicle.AssetId" class="form-select" id="FormControlAssName" disabled>
+                                        <option value=0>Select Asset Name</option>
+                                        @foreach (var asset in ListAssets)
+                                        {
+                                            <option value="@asset.AssetId">@asset.AssetName</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div class="w-25">
+                                    <label class="form-label text-danger" for="FormControlAssType">*Asset Type</label>
+                                    <select @bind="Vehicle.AssetTypeId" class="form-select" id="FormControlAssType">
+                                        <option value=0>Select Asset Type</option>
+                                        @foreach (var asset in ListAssetTypes)
+                                        {
+                                            <option value="@asset.AssetTypeId">@asset.AssetTypeName</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-25">
+                                    <label class="form-label text-danger" for="FormControlMake">* Make</label>
+                                    <select @bind="MakeId" class="form-select" id="FormControlMake">
+                                        <option value=0>Select Make</option>
+                                        @foreach (var make in ListMakes)
+                                        {
+                                            <option value="@make.MakeId">@make.MakeName</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label text-danger" for="FormControlModel">* Model</label>
+
+                                    <select @bind="Vehicle.ModelId" class="form-select" id="FormControlModel">
+                                        <option value=0>Select Model</option>
+                                        @foreach (var model in GetModels())
+                                        {
+                                            <option value="@model.ModelId">@model.ModelName</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label text-danger" for="FormControlYear">* Year</label>
+                                    <select @bind="Vehicle.YearId" class="form-select" id="FormControlYear">
+                                        <option value="-1">Select Year</option>
+                                        @foreach (var year in ListAssetYears)
+                                        {
+                                            <option value="@year.YearId">@year.YearNum</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlVIN">VIN Number</label>
+                                    <input @bind="Vehicle.VinSerialNumber" class="form-control" type="text" id="FormControlVIN" />
+                                </div>
+                                <div class="w-25"></div>
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlTag">License Tag Number</label>
+                                    <input @bind="Vehicle.LicenseTag" class="form-control" type="text" id="FormControlTag" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlCAN">County Asset Number</label>
+                                    <input @bind="Vehicle.CountyAsset" class="form-control" type="text" id="FormControlCAN" />
+                                </div>
+                                <div class="w-25"></div>
+                                <div class="w-50">
+                                    <label class="form-label" for="FormControlBVV">Book Value of Vehicle</label>
+                                    <input @bind="Vehicle.BookValue" class="form-control" type="text" id="FormControlBVV" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Vehicle Notes</label>
+                            <textarea @bind="Vehicle.Notes" class="form-control"></textarea>
+                        </div>
+                        <hr />
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label">Items installed permanently on the vehicle or equipment</label>
+                                @if (BtnHide)
+                                {
+                                    <div>
+                                        <button type="button" @onclick="OnShowModal" class="btn btn-primary">Add Item</button>
+                                    </div>
+                                }
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Item Id</th>
+                                        <th scope="col">Item Cost</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Vitems)
+                                    {
+                                        <tr>
+                                            <th scope="row">
+                                                @GetItemName(@item.ItemId)
+                                            </th>
+                                            <td>
+                                                @*TODO: Format into currency*@
+                                                @String.Format("{0:C}", @item.ItemCost)
+                                            </td>
+                                            <td>
+                                                <button @onclick="() => RemoveItem(item)"
+                                                    class="btn btn-danger">Remove</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+

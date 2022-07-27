@@ -1,0 +1,32 @@
+﻿<div id="@Id" class="mb-5">
+<h4>
+    <i class="far fa-user fa-fw text-theme"></i> 
+    @Title
+</h4>
+    <p>@Message</p>
+    <div class="card">
+        @ChildContent
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+@code{
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

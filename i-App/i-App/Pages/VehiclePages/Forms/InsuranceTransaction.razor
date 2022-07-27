@@ -1,0 +1,48 @@
+﻿
+<h3>Insurance Transactions</h3>
+<hr />
+<br />
+<div class="form-group mb-3">
+    <label class="form-label" for="FormControlAction">Action</label>
+    <select @bind=@Transaction.InsActionId class="form-select" id="FormControlAction" disabled>
+        @foreach(int i in Enum.GetValues(typeof(InsuranceAction)))
+        {
+            
+            <option value="@i">@Enum.GetName(typeof(InsuranceAction), i)</option>
+        }
+    </select>
+</div>
+<div class="form-group mb-3">
+    <label class="form-label" for="FormControlDateInsured">Insurance Date</label>
+    <input @bind=@Transaction.InsDate  type="date" class="form-control" id="FormControlDateInsured" >
+</div>
+
+<div class="form-group mb-3">
+    <label class="form-label" for="FormControlDept">Insurance Type</label>
+    <select @bind=@Transaction.InsTypeId  class="form-select" id="FormControlDept" >
+        <option value=0>Select Insurance Type</option>
+          @foreach(var Type in AppState.InsTypes)
+        {
+            
+            <option value="@Type.InsTypeId">@Type.InsName</option>
+        }                       
+
+    </select>
+</div>
+<div class="form-group mb-3">
+    <div class="d-flex justify-content-between">
+        <div class="w-50">
+            <label class="form-label" for="FormControlAssetC">Asset Coverage</label>
+            <input @bind=@Transaction.AssetCoverage type="number" class="form-control" id="FormControlAssetC" >
+        </div>
+        <div class="w-25"></div>
+        <div class="w-50">
+            <label class="form-label" for="FormControlContent">Content Coverage</label>
+            <input @bind=@Transaction.ContentsCoverage  type="number" class="form-control" id="FormControlContent" >
+        </div>
+    </div>
+</div>
+<div class="form-group mb-3">
+    <button @onclick="OnSubmit" class="btn btn-theme">Submit</button>
+</div>
+

@@ -1,0 +1,30 @@
+﻿    <h3>Vehicle Transaction</h3>
+    <hr />
+    <div class="form-group mb-3">
+        <label class="form-label text-danger"
+        for="FormControlAcQuired">*Transaction Type</label>
+        <select @bind=@Transaction.AsstActionId role="button" class="form-select">
+        @foreach(int i in Enum.GetValues(typeof(AssetAction)))
+        {
+            
+            <option value="@i">@Enum.GetName(typeof(AssetAction), i)</option>
+        }
+    </select>
+    </div>
+
+   <div class="form-group mb-3">
+      <label class="form-label text-danger"
+      for="FormControlTranDate">*Transaction Date</label>
+      <input @bind=@Transaction.TranDate type="date" class="form-control" id="FormControlTranDate" disabled>
+   </div>
+    <div class="form-group mb-3">
+      <label class="form-label text-danger"
+      for="FormControlComDate">*Comm. Court Date</label>
+      <input @bind=@Transaction.CommCourtDate type="date" class="form-control" id="FormControlComDate">
+   </div>
+    <div class="form-group mb-3">
+      <label class="form-label text-danger"
+      for="FormControlAgenItem">*Agenda Item #</label>
+      <input @bind=@Transaction.AgendaItem type="text" class="form-control" id="FormControlAgenItem">
+   </div>
+

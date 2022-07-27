@@ -1,0 +1,127 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "InsuranceContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Data\\models",
+   "ProjectRootNamespace": "i_App",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[AssetAcquisition]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetActionHistory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetInsurances]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Assets]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetsAction]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetTransactions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssetYears]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Departments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DepLocations]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InsuranceActions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InsuranceTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Items]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Properties]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PropertyCons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Roles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VehicleItems]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VehicleMakes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VehicleModels]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Vehicles]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "VMSQL.iTracking",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

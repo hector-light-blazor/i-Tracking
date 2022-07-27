@@ -1,0 +1,87 @@
+﻿
+    <div class="d-md-flex align-items-center">
+                            <div class="me-md-auto text-md-left text-center mb-2 mb-md-0">
+                            Showing @Pagination.FROM to @Pagination.END of @Size entries
+                            </div>
+                            <ul class="pagination mb-0 justify-content-center">
+                                <li role="button" class="page-item @Pagination.IsPreviousDisabled()"><a  @onclick="@Pagination.Previous" class="page-link">Previous</a></li
+                                        @foreach(PaginationPage pagin in @Pagination.GET_PAGES())
+                                        {
+                                            <li role="button" class="page-item @pagin.Active" @onclick="() => ChangeTable(pagin)">
+                                                <a class="page-link">@pagin.Number</a>
+                                            </li>
+                                        }
+                                <li role="button" class="page-item @Pagination.IsNextDisabled()" @onclick="@Pagination.Next"><a class="page-link">Next</a></li>
+            
+                            </ul>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public int Size { get; set; } = 20;
+
+    [Parameter]
+    public int total { get; set; } = 10;
+
+
+    [Parameter]
+    public EventCallback<PaginationPage> OnChange { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnReady { get; set; }
+
+    public PaginationController Pagination = new PaginationController();
+
+
+    protected override async void OnInitialized()
+    {
+
+        await OnReady.InvokeAsync(true);
+    }
+
+     public void Build()
+    {
+        //Lets build the pagination first..
+        Pagination.TABLE_SIZE = (double)Size;
+
+        System.Diagnostics.Debug.WriteLine($"Size {Pagination.TABLE_SIZE}");
+        Pagination.Build();
+
+         System.Diagnostics.Debug.WriteLine($"Size {Pagination.TOTAL_BUTTONS}");
+
+    }
+
+    public void Build(int size)
+    {
+        //Lets build the pagination first..
+        Pagination.TABLE_SIZE = (double)size;
+
+        System.Diagnostics.Debug.WriteLine($"Size {Pagination.TABLE_SIZE}");
+        Pagination.Build();
+
+         System.Diagnostics.Debug.WriteLine($"Size {Pagination.TOTAL_BUTTONS}");
+
+    }
+
+    public async Task ChangeTable(PaginationPage page)
+    {
+        // Deactivate the past one..
+        Pagination.DeActive();
+
+        // tell user the active row display..
+        page.Active = "active";
+
+        Pagination.UPDATE_LABELS(page.Number * total);
+
+        await OnChange.InvokeAsync(page);
+    }
+
+    public void UpdateLabels(int total)
+    {
+        
+    }
+
+
+}

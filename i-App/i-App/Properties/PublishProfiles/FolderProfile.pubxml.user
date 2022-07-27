@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>H:\BlazorApps\i-TrackingPublish</_PublishTargetUrl>
+    <History>True|2022-07-14T22:08:40.0578922Z;True|2022-07-14T16:49:44.7689259-05:00;True|2022-07-14T16:37:08.1674281-05:00;True|2022-07-14T16:21:48.0067112-05:00;True|2022-07-14T16:11:18.6747923-05:00;True|2022-07-14T15:00:17.0884719-05:00;False|2022-07-14T14:56:20.0798147-05:00;False|2022-07-14T14:42:27.6338627-05:00;True|2022-07-14T14:31:54.3782866-05:00;True|2022-07-14T14:23:38.2069735-05:00;True|2022-07-14T13:58:31.2047572-05:00;True|2022-07-14T13:43:15.5014429-05:00;True|2022-07-05T13:52:15.6407317-05:00;True|2022-07-05T13:33:41.3390988-05:00;True|2022-06-24T09:23:21.1868868-05:00;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Pages/VehiclePages/Forms/DepartmentView.razor">
+      <publishTime>07/19/2022 14:41:41</publishTime>
+    </File>
+    <File Include="Pages/VehiclePages/Forms/DepartmentView.razor.cs">
+      <publishTime>07/19/2022 14:43:08</publishTime>
+    </File>
+    <File Include="Pages/VehiclePages/Forms/InsuranceTransaction.razor">
+      <publishTime>07/07/2022 08:34:23</publishTime>
+    </File>
+    <File Include="Pages/VehiclePages/Forms/InsuranceTranTableView.razor">
+      <publishTime>07/19/2022 09:10:46</publishTime>
+    </File>
+    <File Include="Pages/VehiclePages/Forms/VehicleInfo.razor">
+      <publishTime>07/19/2022 14:57:55</publishTime>
+    </File>
+    <File Include="Pages/VehiclePages/Forms/VehicleInfo.razor.cs">
+      <publishTime>07/19/2022 14:44:41</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

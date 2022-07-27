@@ -1,0 +1,99 @@
+﻿<div class="table-responsive tableWrapper">
+    <table class="table table-hover text-nowrap w-100">
+        <thead>
+            <tr>
+                <th class="border-top-0 pt-0 pb-2">Vehicle Id</th>
+                <th class="border-top-0 pt-0 pb-2">Req Number</th>
+                <th class="border-top-0 pt-0 pb-2">Make</th>
+                <th class="border-top-0 pt-0 pb-2">Model</th>
+                <th class="border-top-0 pt-0 pb-2">Book Value</th>
+                <th class="border-top-0 pt-0 pb-2">Status</th>
+                <th class="border-top-0 pt-0 pb-2">Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+                 <tr>
+                    <td class="w-10px align-middle loading">
+                       <div class="bar"></div>
+                    </td>
+                    <td class="loading">
+                        <div class="bar"></div>
+                    </td>
+                    <td class="loading">
+                        <div class="bar"></div>
+                    </td>
+                    <td class="align-middle loading">
+                       <div class="bar"></div>
+                    </td>
+                      <td class="loading">
+                        <div class="bar"></div>
+                    </td>
+                    <td class="loading">
+                         <div class="bar"></div>
+                    </td>
+                    <td class="py-1 align-middle loading">
+                        <div class="bar"></div>
+                    </td>
+                 </tr>          
+                    <tr>
+                        <td class="w-10px align-middle loading">
+                           <div class="bar"></div>
+                         </td>
+                           <td class="loading">
+                        <div class="bar"></div>
+                    </td>
+                      <td class="loading">
+                        <div class="bar"></div>
+                    </td>
+                        <td class="loading">
+                            <div class="bar"></div>
+                        </td>
+                        <td class="align-middle loading">
+                           <div class="bar"></div>
+                        </td>
+                        <td class="loading">
+                             <div class="bar"></div>
+                        </td>
+                        <td class="py-1 align-middle loading">
+                            <div class="bar"></div>
+                        </td>
+                     </tr>       
+                     <tr>
+                        <td class="w-10px align-middle loading">
+                           <div class="bar"></div>
+                         </td>
+                           <td class="loading">
+                        <div class="bar"></div>
+                        </td>
+                          <td class="loading">
+                            <div class="bar"></div>
+                        </td>
+                        <td class="loading">
+                            <div class="bar"></div>
+                        </td>
+                        <td class="align-middle loading">
+                           <div class="bar"></div>
+                        </td>
+                        <td class="loading">
+                             <div class="bar"></div>
+                        </td>
+                        <td class="py-1 align-middle loading">
+                            <div class="bar"></div>
+                        </td>
+                     </tr>       
+        </tbody>
+    </table>
+</div>
+
+@code{
+    [Parameter]
+    public EventCallback<bool> OnReady { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        await OnReady.InvokeAsync(true);
+    }
+}
+
+

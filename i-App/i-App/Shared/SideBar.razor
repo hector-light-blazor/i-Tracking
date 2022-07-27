@@ -1,0 +1,96 @@
+﻿    <div class="app-sidebar-content ps" data-scrollbar="true" 
+        data-height="100%" data-init="true" 
+        style="height: 100%;">
+
+    <div class="menu">
+        <div class="menu-header">Navigation</div>
+            <div class="menu-item @Active.DashboardMenu" @onclick="() =>  { Active.SetActive(ActiveOperator.DASH); }" >
+                <a href="/" class="menu-link">
+                <span class="menu-icon"><i class="fa fa-microchip"></i></span>
+                <span class="menu-text">Dashboard</span>
+                </a>
+            </div>
+            <div class="menu-item has-sub @Active.VehicleMenu @expand.VehiclesM" @onclick="() => { expand.ExpandMenu(Operator.VEHICLE); Active.SetActive(ActiveOperator.VEHICLE); }" >
+                <a href="/Vehicles/List" class="menu-link">
+                    <span class="menu-icon"><i class="fa fa-car"></i></span>
+                    <span class="menu-text">Vehicles</span>
+                    <span class="menu-caret"><b class="fa fa-caret-down"></b></span>
+                </a>
+                <div class="menu-submenu">
+                    <div class="menu-item">
+                        <a href="/Vehicle/Add" class="menu-link">
+                            <span class="menu-text">
+                                 <i class="fa fa-pen"></i>
+                                 Add
+                            </span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="/VehicleTranfer" class="menu-link">
+                            <span class="menu-text">
+                                <i class="fa fa-arrow-right-arrow-left"></i>
+                                Transfer
+                            </span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="VehicleDelete" class="menu-link">
+                            <span class="menu-text">
+                                <i class="fa fa-trash-can"></i>
+                                Delete
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-item has-sub @Active.HeaveEquipMenu @expand.EquipmentM" @onclick="() => { expand.ExpandMenu(Operator.EQUIPMENT); Active.SetActive(ActiveOperator.EQUIPMENT); }" >
+                <a href="/HeavyEquipList" class="menu-link">
+                    <span class="menu-icon">
+                    <i class="fa fa-truck"></i>
+                    </span>
+                    <span class="menu-text">Heavy Equipment</span>
+                    <span class="menu-caret"><b class="fa fa-caret-down"></b></span>
+                </a>
+            </div>
+           <div class="menu-item has-sub @Active.PropertyListMenu @expand.PropertiesM" @onclick="() => {expand.ExpandMenu(Operator.PROPERTIES); Active.SetActive(ActiveOperator.PROPERTIES);}" >
+                <a href="/PropertyList" class="menu-link">
+                    <span class="menu-icon">
+                    <i class="fa fa-building"></i>
+                    </span>
+                    <span class="menu-text">Property List</span>
+                    <span class="menu-caret"><b class="fa fa-caret-down"></b></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-3 px-4 mt-auto">
+        <a href="https://seantheme.com/hud/documentation/index.html" target="_blank" class="btn d-block btn-outline-theme">
+            <i class="fa fa-code-branch me-2 ms-n2 opacity-5"></i> Documentation
+        </a>
+    </div>
+    @*<-- Comments -->*@
+    <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+        <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+    </div>
+    <div class="ps__rail-y" style="top: 0px; right: 0px;">
+        <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+    </div>
+
+@code {
+    // exmaple for expanding css
+    private Expand expand = new Expand
+    {
+        VehiclesM = "",
+        EquipmentM = "",
+        PropertiesM ="",
+    };
+
+    private Active Active = new Active
+        {
+            DashboardMenu = "active",
+            VehicleMenu = "",
+            HeaveEquipMenu = "",
+            PropertyListMenu = ""
+    };
+}

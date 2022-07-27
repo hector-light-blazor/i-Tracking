@@ -1,0 +1,75 @@
+<div class="modal fade show" style="display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">@Title</h5>
+        <button type="button" @onclick="OnExit" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+              <div class="form-group mb-3">
+                            <div >
+                                <div >
+                                      <label class="form-label text-danger" for="FormControlModel">* Model</label>
+                                    
+                                      <select @bind="@vItems.ItemId"   class="form-select" id="FormControlModel" >
+                                        <option value=0>Select Model</option>
+                                            @foreach(var item in Items)
+                                            {
+                                                <option value="@item.ItemId">@item.ItemName</option>
+                                            }
+                                     </select>
+                                </div>
+                                 <div >
+                                      <label class="form-label"   for="FormCntIC">Item Cost</label>
+                                      <input @bind="@vItems.ItemCost" class="form-control" type="number" id="FormCntIC" />
+                                </div>
+                            </div> 
+                    </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-danger">@Message</span>
+        <button type="button" @onclick="OnExit" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+        <button type="button" @onclick="OnAdd" class="btn btn-outline-theme">Add Item</button>
+      </div>
+    </div>
+  </div>
+</div>
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public List<Items> Items { get; set; } = new List<Items>();
+
+    public VehicleItems vItems { get; set; } = new VehicleItems();
+
+    [Parameter]  
+    public EventCallback<bool> OnClose { get; set; }  
+
+    [Parameter]  
+    public EventCallback<VehicleItems> OnUpdate { get; set; }
+
+    public string Message { get; set; } = string.Empty;
+
+    async void OnExit()
+    {
+        await OnClose.InvokeAsync(false);
+    }
+
+    async void OnAdd()
+    {
+        Message = string.Empty;
+        if (vItems.ItemCost == null)
+        {
+            Message = "Please enter item cost";
+            return;
+        } else if (vItems.ItemId == null || vItems.ItemId == 0)
+        {
+            Message = "Please select item";
+            return;
+        }
+
+        await OnUpdate.InvokeAsync(vItems);
+        OnExit();
+    }
+}

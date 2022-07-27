@@ -1,0 +1,263 @@
+﻿@page "/Dashboard"
+@page "/Dashboard/{response}"
+@using System.Text.Json
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@inject VehicleService VehicleService
+@inject AppState AppState
+@attribute [Authorize]
+
+@if (showModal)
+{
+  <ModalTable Title="@TableTitle" 
+      OnClose="OnModalClose" Count=@AppState.MasterTableView.Count
+                Table="@TableResult"></ModalTable>
+}
+<div class="row">
+    <div class="col-xl-3 col-lg-6" role="button">
+            <DashboardCard Count="@totalVehicles" Title=@GetTitle("Vehicles") />
+    </div>
+     <div class="col-xl-3 col-lg-6" role="button">
+            <DashboardCard Title=@GetTitle("Heavy Vehicles") />
+    </div>
+     <div class="col-xl-3 col-lg-6" role="button">
+             <DashboardCard Title=@GetTitle("Properties") /> 
+    </div>
+     <div class="col-xl-3 col-lg-6" role="button" @onclick=@FetchPending>
+          <DashboardCard Count="@totalPendingVh" Title="Pending Vehicles" />
+    </div>
+
+    <hr />
+</div>
+@if (AppState.ViewAccount.IsAdmin())
+{
+    <div class="row">
+        <h3>Executive Office: Progress Report</h3>
+        <div class="col-xl-3 col-lg-6" role="button" @onclick=@fetchStepOne>
+            <a class="nav-link">
+                 <DashboardCard Count="@totalStepOne" Title="Step One: Has Req Number" />
+            </a>
+        </div>
+         <div class="col-xl-3 col-lg-6" role="button" @onclick=@fetchStepTwo>
+             <a class="nav-link">
+                 <DashboardCard Count="@totalStepTwo" Title="Step Two: Has Req & PO Number" />
+             </a>
+
+        </div>
+         <div class="col-xl-3 col-lg-6" role="button" @onclick=@fetchStepThree>
+            <a class="nav-link">
+                <DashboardCard Count="@totalStepThree" Title="Step Three: Vehicle Arrived" />
+            </a>
+        </div>
+        <div class="col-xl-3 col-lg-6" role="button" @onclick=@fetchStepFourth>
+            <a class="nav-link">
+                <DashboardCard Count="@totalStepFourth" Title="Step Fourth: Vehicle Active" />
+            </a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? response { get; set; }
+    private bool showModal { get; set; } = false;
+    private string TableTitle = "";
+    private int totalVehicles { get; set; } = 0;
+    private int totalPendingVh { get; set; } = 0;
+    private int totalStepOne { get; set; } = 0;
+    private int totalStepTwo { get; set; } = 0;
+    private int totalStepThree { get; set; } = 0;
+    private int totalStepFourth { get; set; } = 0;
+    private string? userInput;
+    private string? messageInput;
+    private List<ViewVehicleMakeModel> TableResult = new List<ViewVehicleMakeModel>();
+    //private List<ChatVM> chats = new List<ChatVM>();
+    //private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //hubConnection = new HubConnectionBuilder()
+        //   .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+        //   .Build();
+
+        //hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        //{
+        //    var encodedMsg = $"{user}: {message}";
+        //    chats.Add(new ChatVM { ChatName = user, Message = message });
+        //    InvokeAsync(StateHasChanged);
+        //});
+
+        //await hubConnection.StartAsync();
+        if (!string.IsNullOrEmpty(response)) { 
+            //    int res = DateTime.Compare(AppState.ViewAccount.Expire, DateTime.Now);
+
+            //    //Only if expire is greater than today date we will save to local storage..
+            //    if (res > 0)
+            //    {
+            //        await BrowserStorage.SetAsync("account", JsonSerializer.Serialize<ViewAccount>(AppState.ViewAccount));
+            //    }
+
+        }
+
+        await Task.Delay(500);
+
+        GrabData();
+    }
+
+    public async void GrabData() { 
+        if (AppState.ViewAccount.IsAdmin())
+        {
+            totalVehicles = await VehicleService.GetTotalVehicles();
+            totalPendingVh = await VehicleService.GetTotalPendingVehicles();
+            totalStepOne = await VehicleService.GetTotalReqVehicles();
+            totalStepTwo = await VehicleService.GetTotalPoVehicles();
+            totalStepThree = await VehicleService.GetTotalArrivedVehicles();
+            totalStepFourth = await VehicleService.GetTotalActiveVehicles();
+        } else if (AppState.ViewAccount.Roles.RoleId == (int)RolesStats.Purchasing)
+        {
+            totalPendingVh = await VehicleService.GetTotalPendingWithoutPOVehicles();
+            totalVehicles = await VehicleService.GetTotalVehicles(AppState.ViewAccount.DepId);
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("console.log", AppState.ViewAccount);
+
+            totalVehicles = await VehicleService.GetTotalVehicles(AppState.ViewAccount.DepId);
+            totalPendingVh = await VehicleService.GetTotalPendingVehiclesByDept(AppState.ViewAccount.DepId);
+        }
+
+    }
+
+
+    private async void OnModalClose()
+    {
+        TableResult = new List<ViewVehicleMakeModel>();
+        showModal = false;
+        GrabData();
+        await JS.InvokeVoidAsync("removeModal");
+
+    }
+
+    private async Task FetchPending()
+    {
+        if (AppState.ViewAccount.IsAdmin())
+        {
+
+        }
+        else if (AppState.ViewAccount.Roles.RoleId == (int)RolesStats.Purchasing) {
+
+            showModal = true;
+            TableTitle = "Pending Results: Need PO Numbers";
+            await JS.InvokeVoidAsync("addModal");
+            await Task.Delay(500);
+            AppState.MasterTableView = await VehicleService.GetPendingWithoutPOVehicles();
+
+            if (AppState.MasterTableView.Count > 10)
+            {
+                TableResult = AppState.MasterTableView .Take(10).ToList();
+            }
+            else
+            {
+                TableResult = AppState.MasterTableView;
+            }
+        }
+
+
+    }
+
+    private async Task fetchStepOne()
+    {
+        showModal = true;
+        TableTitle = "Step One Results: Has Req Number";
+        await JS.InvokeVoidAsync("addModal");
+        await Task.Delay(500);
+
+        AppState.MasterTableView = await VehicleService.GetVehiclesStepOne();
+        DeterMineSizePagination();
+
+
+    }
+
+    private async Task fetchStepTwo()
+    {
+        showModal = true;
+        TableTitle = "Step Two Results: Has Req & PO Number";
+        await JS.InvokeVoidAsync("addModal");
+        await Task.Delay(500);
+
+        AppState.MasterTableView = await VehicleService.GetVehiclesStepTwo();
+        DeterMineSizePagination();
+    }
+
+    private async Task fetchStepThree()
+    {
+        showModal = true;
+        TableTitle = "Step Three Results: Has Arrived";
+        await JS.InvokeVoidAsync("addModal");
+        await Task.Delay(500);
+        AppState.MasterTableView = await VehicleService.GetVehiclesStepThree();
+        DeterMineSizePagination();
+    }
+
+    private async Task fetchStepFourth()
+    {
+        
+         showModal = true;
+        TableTitle = "Step Fourth Results: Vehicles Active";
+        await JS.InvokeVoidAsync("addModal");
+        await Task.Delay(500);
+        AppState.MasterTableView = await VehicleService.GetVehiclesStepThree();
+        DeterMineSizePagination();
+
+
+    }
+
+
+
+
+    private void DeterMineSizePagination()
+    {
+          if (AppState.MasterTableView.Count > 10)
+            {
+                TableResult = AppState.MasterTableView .Take(10).ToList();
+            }
+            else
+            {
+                TableResult = AppState.MasterTableView;
+            }
+    }
+
+
+    //private async Task Send()
+    //{
+    //    if (hubConnection is not null)
+    //    {
+    //        await hubConnection.SendAsync("SendMessage", AppState.ViewAccount.FirstName, messageInput);
+    //    }
+    //}
+
+    //public bool IsConnected =>
+    //    hubConnection?.State == HubConnectionState.Connected;
+
+    //public async ValueTask DisposeAsync()
+    //{
+    //    if (hubConnection is not null)
+    //    {
+    //        await hubConnection.DisposeAsync();
+    //    }
+    //}
+
+    public string GetTitle(string VehicleType) { 
+
+        if(AppState.ViewAccount.IsAdmin())
+        {
+            return $"Total {VehicleType} in Hidalgo County";
+        }
+
+        return $"Total {VehicleType} By Department";
+
+    }
+
+}
+
+
