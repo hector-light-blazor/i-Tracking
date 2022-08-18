@@ -1,8 +1,8 @@
 # README #
-This application is for Hidalgo County.
+This application is for my previous employer: Hidalgo County.
 This is only a preview to showcase my work.
-My current role is Application Developer III.
-Hidalgo County needed a system to track vehicles, heavy equipment, and properties to determine if they had insurance or not. This web application will replace the existing workflow.
+Hidalgo County needed a system to track vehicles, heavy equipment, and properties to determine if they had insurance or not.
+This web application will replace the existing workflow.
 
 The current workflow is to fill out some excel forms and e-mail˙them to the executive office.
 
